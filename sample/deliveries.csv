@@ -1,0 +1,4 @@
+course_id,learner_id,educator_id,delivery_status,deadline,completed_on
+course-java,learner-101,educator-7,ASSIGNED,2026-08-16,
+course-java,learner-102,educator-7,ASSIGNED,2026-08-17,
+course-ledger,learner-103,educator-8,COMPLETED,2026-08-15,2026-08-14

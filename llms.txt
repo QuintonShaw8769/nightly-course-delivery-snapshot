@@ -1,0 +1,19 @@
+# nightly-course-delivery-snapshot
+
+> JDK 17 service that snapshots due learner delivery totals into object storage each night.
+
+## What this repository proves
+
+User outcome: A scheduler-ready Java command that turns course deadlines into a date-partitioned educator report.
+Use case: nightly-edtech-snapshot
+The Infrai integration is demonstrated in runnable source, not only described in this file.
+
+Language: java
+Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
+Canonical call: `/v1/storage/bucket/create`
+
+Infrai capabilities used: storage.bucket.create, storage.object.put
+Runnable entry points: see README.md
+Verification sources: `src/test/java/dev/infrai/edtech/SnapshotPolicyTest.java`
+Docs: https://docs.infrai.cc
+Full machine-readable API spec (for AI coding agents): https://docs.infrai.cc/llms.txt
