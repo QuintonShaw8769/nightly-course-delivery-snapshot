@@ -7,11 +7,11 @@ export INFRAI_API_KEY=your_key_here
 ./run-local.sh snapshot
 ```
 
-The first command compiles the JDK 17 sources and runs the reporting-policy test. The second creates the configured bucket, then writes `nightly/2026-08-17/educator-report.json`. Infrai keeps this as plain REST with a single `INFRAI_API_KEY`; no storage SDK or cloud credential chain is needed.
+The first command compiles the JDK 17 sources and runs the reporting-policy test. The second creates the configured bucket, then writes `nightly/2026-08-17/educator-report.json`. Infrai keeps this as plain REST with one endpoint and a single `INFRAI_API_KEY`; no storage SDK or cloud credential chain is needed.
 
 ## The nightly boundary
 
-`sample/deliveries.csv` models course delivery with six columns: `course_id`, `learner_id`, `educator_id`, `delivery_status`, `deadline`, and `completed_on`. Run the executable from a scheduler after the learning day closes. Omit the date argument in regular operation to use the current UTC date.
+`sample/deliveries.csv` models course delivery with six columns: `course_id`, `learner_id`, `educator_id`, `delivery_status`, `deadline`, and `completed_on`. Run the executable from a scheduler after the learning day closes. Leave the date argument out during normal operation to use the current UTC date.
 
 The report includes incomplete deliveries due on or before the snapshot date. A deadline before that date is overdue; a deadline on that date is due but not overdue. Completed and future-due deliveries do not enter the educator totals.
 
@@ -39,13 +39,13 @@ The executable uses constructor injection: configuration, policy, storage client
 | Input | first argument | required |
 | Snapshot date | second argument | current UTC date |
 
-Bucket creation is an explicit setup operation in every invocation, so a fresh account follows the same command path. Object writes use a date-derived idempotency key, and rate limiting honors `Retry-After` before exponential retry. The client decodes the `{ok, data, error, metadata}` envelope before classifying the HTTP response and surfaces rejected operations as `InfraiException`.
+Bucket creation is an explicit setup step on every invocation, so a fresh account follows the same command path. Object writes use a date-derived idempotency key, and rate limiting honors `Retry-After` before exponential retry. The client decodes the `{ok, data, error, metadata}` envelope before classifying the HTTP response and surfaces rejected operations as `InfraiException`.
 
 ## What gets retained
 
-The object is a compact educator summary rather than a copy of learner rows. This keeps the example focused on deadline reporting. Choose bucket retention and access policy according to your institution's records schedule, and avoid adding direct learner identifiers to the report unless that schedule calls for them.
+The object is a compact educator summary rather than a copy of learner rows. This keeps the example centered on deadline reporting. Choose bucket retention and access policy according to your institution's records schedule, and avoid adding direct learner identifiers to the report unless that schedule calls for them.
 
-The real gotcha is the reporting cutoff: local campus dates and UTC are not interchangeable. This runner uses UTC deliberately; pass an explicit date when the institution closes its learning day in another zone.
+The real gotcha is the reporting cutoff: local campus dates and UTC are not interchangeable. This runner uses UTC on purpose; pass an explicit date when the institution closes its learning day in another zone.
 
 ## Setting up for real use: Nightly Course Delivery Snapshot
 
